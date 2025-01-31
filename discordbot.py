@@ -14,7 +14,7 @@ app = discord.Client(intents=intents)
 
 async def login():
     """Handle login by entering username and password."""
-    await app.login(os.getenv("DISCORD_TOKEN"))  # Ensure you have a token in your .env file
+    await app.login(os.getenv("DISCORD_TOKEN"))  # Use the token from .env file
     account = input(f"Enter your Discord username: ")
     if not account or len(account) == 0:
         print("Invalid username.")
