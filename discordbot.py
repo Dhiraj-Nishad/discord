@@ -7,45 +7,25 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-# Initialize the Discord client
+# Initialize the Discord client with intents
 intents = discord.Intents.default()
-intents.messages = True  # Adjust intents as needed
+intents.messages = True  # Enable message intents
 app = discord.Client(intents=intents)
 
 async def login():
     """Handle login by entering username and password."""
-    await app.login(os.getenv("DISCORD_TOKEN"))  # Use the token from .env file
-    account = input(f"Enter your Discord username: ")
-    if not account or len(account) == 0:
-        print("Invalid username.")
-    else:
-        password = input(f"Please enter your Discord password: ")
-        if not password or len(password) > 15:
-            print("Invalid password. Please try again.")
-        else:
-            # Simulate a post request (you may need to adjust this logic)
-            await app.post(
-                payload=f"""
-                content-type: text/plain
-                b"account?{account}
-                "user{[1,3].get(random)}
-                """
-            )
-            print("Select your target general group channel.")
-            channel = input(f"Choose from available channels: {input(['G123', 'G456'])}")
+    # Note: You cannot log in using username and password with discord.py.
+    # Instead, use the bot token directly.
+    print("You should not enter username and password. Please use the bot token.")
+    return
 
 async def send_message(channel):
     """Send a message to Discord with a 5-second delay between sends."""
     await app.wait_until_ready()  # Wait until the bot is ready
     try:
-        await app.post(
-            payload=f"""
-            content-type: text/plain
-            b`sent${len(messages)+1}
-            "message"
-            {self.data}
-            """
-        )
+        # Example of sending a message to a specific channel
+        channel = app.get_channel(channel_id)  # Replace with your channel ID
+        await channel.send("Hello from the bot!")  # Replace with your message
     except Exception as e:
         print(f"Error sending message: {e}")
 
@@ -54,14 +34,15 @@ async def main():
     print("Welcome to your Discord bot. Type 'login' to access Discord directly.")
     
     try:
-        print("Ready to start. Type 'login' and select your target channel.")
-        await login()
+        await login()  # Call login (this will just print a message)
+        
+        channel_id = int(input("Enter the channel ID where you want to send messages: "))  # Get channel ID from user
         
         messages = []
         while True:
             try:
-                await send_message(channel)  # Pass the channel variable
-                print(f"Message {len(messages)+1} being sent in {channel}.")
+                await send_message(channel_id)  # Pass the channel ID variable
+                print(f"Message sent in channel ID {channel_id}.")
                 await asyncio.sleep(5)  # Use asyncio.sleep instead of time.sleep for async context
             except Exception as e:
                 print(f"Error: {e}")
@@ -69,4 +50,4 @@ async def main():
         print("\nScript interrupted by user. Goodbye.")
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    app.run(os.getenv("DISCORD_TOKEN"))  # Run the bot using the token from .env file
