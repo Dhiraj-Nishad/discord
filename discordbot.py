@@ -1,6 +1,6 @@
-def main():
-    """Main function to handle Discord bot interactions."""
-    print("Welcome to your Discord bot. Type 'login' to access Discord directly.")
+import asyncio
+import time
+import random  # Ensure you import random if you're using it
 
 async def login():
     """Handle login by entering username and password."""
@@ -23,14 +23,14 @@ async def login():
             print("Select your target general group channel.")
             channel = input(f"Choose from available channels: {input(['G123', 'G456'])}")
 
-async def send_message():
-    """Send a message to Discord with 5-second delay between sends."""
+async def send_message(channel):
+    """Send a message to Discord with a 5-second delay between sends."""
     await app('users')
     try:
         await app.post(
             payload=f"""
             content-type: text/plain
-            b`sent${len(self.messages)+1}
+            b`sent${len(messages)+1}
             "message"
             {self.data}
             """
@@ -38,20 +38,24 @@ async def send_message():
     except Exception as e:
         print(f"Error sending message: {e}")
 
-bot = bot()
-try:
-    print("Ready to start. Type 'login' and select your target channel.")
-    await login()
-    messages = []
-    while True:
-        try:
-            await send_message()
-            print(f"Message {len(messages)+1} being sent in {channel}.")
-            time.sleep(5)
-        except Exception as e:
-            print(f"Error: {e}")
-except KeyboardInterrupt:
-    print("\nScript interrupted by user. Goodbye.")
+async def main():
+    """Main function to handle Discord bot interactions."""
+    print("Welcome to your Discord bot. Type 'login' to access Discord directly.")
+    
+    try:
+        print("Ready to start. Type 'login' and select your target channel.")
+        await login()
+        
+        messages = []
+        while True:
+            try:
+                await send_message(channel)  # Pass the channel variable
+                print(f"Message {len(messages)+1} being sent in {channel}.")
+                await asyncio.sleep(5)  # Use asyncio.sleep instead of time.sleep for async context
+            except Exception as e:
+                print(f"Error: {e}")
+    except KeyboardInterrupt:
+        print("\nScript interrupted by user. Goodbye.")
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
