@@ -1,10 +1,20 @@
 import asyncio
-import time
-import random  # Ensure you import random if you're using it
+import discord
+import random
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Initialize the Discord client
+intents = discord.Intents.default()
+intents.messages = True  # Adjust intents as needed
+app = discord.Client(intents=intents)
 
 async def login():
     """Handle login by entering username and password."""
-    await app('users')
+    await app.login(os.getenv("DISCORD_TOKEN"))  # Ensure you have a token in your .env file
     account = input(f"Enter your Discord username: ")
     if not account or len(account) == 0:
         print("Invalid username.")
@@ -13,6 +23,7 @@ async def login():
         if not password or len(password) > 15:
             print("Invalid password. Please try again.")
         else:
+            # Simulate a post request (you may need to adjust this logic)
             await app.post(
                 payload=f"""
                 content-type: text/plain
@@ -25,7 +36,7 @@ async def login():
 
 async def send_message(channel):
     """Send a message to Discord with a 5-second delay between sends."""
-    await app('users')
+    await app.wait_until_ready()  # Wait until the bot is ready
     try:
         await app.post(
             payload=f"""
