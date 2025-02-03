@@ -1,17 +1,20 @@
 import asyncio
 import discord
 
-# Create a Discord client instance
-client = discord.Client()
+# Define and enable intents
+intents = discord.Intents.default()
+intents.message_content = True  # Enable this if you need to read the content of messages
 
-# Global variables to store source and target channel IDs
+# Create a Discord client instance with intents enabled
+client = discord.Client(intents=intents)
+
+# Global variables to store the source and target channel IDs
 source_channel_id = None
 target_channel_id = None
 
 @client.event
 async def on_ready():
     print(f"Logged in as: {client.user}")
-    
     # Prompt for source and target channel IDs once connected
     global source_channel_id, target_channel_id
     try:
@@ -23,12 +26,11 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    # Only forward messages from the source channel
+    # Only forward messages from the source channel that are not from your own account
     if message.channel.id == source_channel_id and message.author != client.user:
         target_channel = client.get_channel(target_channel_id)
         if target_channel is not None:
             try:
-                # Format and send the forwarded message
                 forward_text = f"Forward from {message.author}: {message.content}"
                 await target_channel.send(forward_text)
                 print(f"Forwarded a message from {message.author}")
